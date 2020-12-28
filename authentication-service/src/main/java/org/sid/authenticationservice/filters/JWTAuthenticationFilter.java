@@ -4,6 +4,7 @@ package org.sid.authenticationservice.filters;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.sid.authenticationservice.Entity.AppUser;
 import org.sid.authenticationservice.JWTUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,13 +31,30 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     //Quand l'utilisateur va saisir son userName et son motDePasse
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("attemptAuthentication");
-        String username = request.getParameter("username");
+        try {
+            AppUser appUser = new ObjectMapper().readValue(request.getInputStream(), AppUser.class);
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(appUser.getUsername(), appUser.getPassword()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        /* String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println("username: "+username);
-        System.out.println("password: "+password);
-        UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(username,password);
-        return authenticationManager.authenticate(authenticationToken);
+        System.out.println("attemptAuthentication");
+        System.out.println(username);
+        System.out.println(password);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        return authenticationManager.authenticate(authenticationToken);*/
+
+
+       /* try {
+            AppUser appUser = new ObjectMapper().readValue(request.getInputStream(), AppUser.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override

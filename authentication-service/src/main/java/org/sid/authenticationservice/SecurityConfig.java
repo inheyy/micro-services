@@ -30,10 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception{
+        http.cors().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/h2-console/**","/refreshToken/**").permitAll();
+        http.authorizeRequests().antMatchers("/h2-console/**","/refreshToken/**","/login/**").permitAll();
         //http.formLogin();
         //http.authorizeRequests().antMatchers(HttpMethod.POST,"/users/**").hasAuthority("ADMIN");
         //http.authorizeRequests().antMatchers(HttpMethod.GET,"/roles/**").hasAuthority("USER");
